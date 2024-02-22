@@ -49,8 +49,6 @@ jobs:
     environment:
       name: 'staging'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    permissions:
-      id-token: write #This is required for requesting the JWT
 
     steps:
       - name: Download artifact from build job
@@ -61,18 +59,10 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
-      
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_85FECF175BCE483CB3B220E47C2BE520 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_CB7F0C7E44EC49D18FFB6AF2ABE9CCF8 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_3745176D686340FC96BFCF664B58CC9C }}
-
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
         id: deploy-to-webapp
         with:
           app-name: 'voyager-delta-flyer4'
           slot-name: 'staging'
-          
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_DE6C07E4BB774CC581B982AC9653F33A }}
